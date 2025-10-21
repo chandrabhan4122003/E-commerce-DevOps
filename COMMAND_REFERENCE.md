@@ -43,8 +43,8 @@ aws configure list
 Name                    Value             Type    Location
 ----                    -----             ----    --------
 profile                <not set>             None    None
-access_key     ****************FD4B shared-credentials-file
-secret_key     ****************Y8Qk shared-credentials-file
+access_key     ******************** shared-credentials-file
+secret_key     ******************** shared-credentials-file
 region               eu-north-1      config-file    ~/.aws/config
 ```
 
@@ -59,8 +59,8 @@ aws sts get-caller-identity
 ```json
 {
   "UserId": "AIDACKCEVSQ6C2EXAMPLE",
-  "Account": "438465150999",
-  "Arn": "arn:aws:iam::438465150999:user/terraform-user"
+  "Account": "123456789012",
+  "Arn": "arn:aws:iam::123456789012:user/terraform-user"
 }
 ```
 
@@ -81,7 +81,7 @@ aws s3 sync . s3://your-bucket-name --exclude "terraform/*" --exclude ".git/*"
 **Example**:
 
 ```bash
-aws s3 sync D:\DevopsProject\e-commerce-project s3://devops7thsem-ecommerce-438465150999 --exclude "terraform/*" --exclude ".git/*"
+aws s3 sync D:\DevopsProject\e-commerce-project s3://your-unique-bucket-name --exclude "terraform/*" --exclude ".git/*"
 ```
 
 #### Empty S3 Bucket (for cleanup)
@@ -93,7 +93,7 @@ aws s3 rm s3://bucket-name --recursive
 **Example**:
 
 ```bash
-aws s3 rm s3://devops7thsem-ecommerce-438465150999 --recursive
+aws s3 rm s3://your-unique-bucket-name --recursive
 ```
 
 #### Check S3 Bucket Contents
@@ -309,19 +309,19 @@ Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-cloudfront_distribution_domain_name = "diuv7jllh15np.cloudfront.net"
-cloudfront_distribution_id = "E173I7XBE5QEVB"
-s3_bucket_name = "devops7thsem-ecommerce-438465150999"
-s3_bucket_website_endpoint = "devops7thsem-ecommerce-438465150999.s3-website.eu-north-1.amazonaws.com"
-s3_website_url = "http://devops7thsem-ecommerce-438465150999.s3-website.eu-north-1.amazonaws.com"
-website_url = "https://diuv7jllh15np.cloudfront.net"
+cloudfront_distribution_domain_name = "d1234567890abc.cloudfront.net"
+cloudfront_distribution_id = "E1234567890ABC"
+s3_bucket_name = "your-unique-bucket-name"
+s3_bucket_website_endpoint = "your-unique-bucket-name.s3-website.eu-north-1.amazonaws.com"
+s3_website_url = "http://your-unique-bucket-name.s3-website.eu-north-1.amazonaws.com"
+website_url = "https://d1234567890abc.cloudfront.net"
 ```
 
 ### **S3 Sync Success Output**
 
 ```
 Completed 3.6 MiB/3.6 MiB (858.2 KiB/s) with 1 file(s) remaining
-upload: ..\README.md to s3://devops7thsem-ecommerce-438465150999/README.md
+upload: ..\README.md to s3://your-unique-bucket-name/README.md
 ```
 
 ### **Terraform Destroy Success Output**

@@ -196,12 +196,12 @@ Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-cloudfront_distribution_domain_name = "diuv7jllh15np.cloudfront.net"
-cloudfront_distribution_id = "E173I7XBE5QEVB"
+cloudfront_distribution_domain_name = "d1234567890abc.cloudfront.net"
+cloudfront_distribution_id = "E1234567890ABC"
 s3_bucket_name = "your-bucket-name"
 s3_bucket_website_endpoint = "your-bucket-name.s3-website.eu-north-1.amazonaws.com"
 s3_website_url = "http://your-bucket-name.s3-website.eu-north-1.amazonaws.com"
-website_url = "https://diuv7jllh15np.cloudfront.net"
+website_url = "https://d1234567890abc.cloudfront.net"
 ```
 
 ### Step 6: Upload Website Files
@@ -220,7 +220,7 @@ aws s3 sync . s3://your-bucket-name --exclude "terraform/*" --exclude ".git/*"
 
 ### Primary URL (CloudFront CDN):
 
-**https://diuv7jllh15np.cloudfront.net**
+**https://d1234567890abc.cloudfront.net**
 
 ### Direct S3 URL:
 
@@ -487,7 +487,7 @@ Your e-commerce website is now live with:
 - **Cost Effective**: Pay-per-use pricing
 - **Easy Maintenance**: Infrastructure as Code
 
-**Website URL**: https://diuv7jllh15np.cloudfront.net
+**Website URL**: https://d1234567890abc.cloudfront.net
 
 ---
 

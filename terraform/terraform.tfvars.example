@@ -1,7 +1,7 @@
 # Copy this file to terraform.tfvars and update the values
 
 aws_region = "eu-north-1"
-bucket_name = "your-unique-bucket-name-here"
+bucket_name = "dev7thsemsss"
 environment = "dev"
 domain_name = ""  # Optional: your custom domain
 certificate_arn = ""  # Optional: SSL certificate ARN for custom domain

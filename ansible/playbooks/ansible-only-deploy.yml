@@ -1,0 +1,81 @@
+---
+# ============================================
+# Ansible AWS S3 Website Deployment
+# ============================================
+# IMPORTANT: Update the project_dir variable below with your actual project path
+# Example for Windows: "C:\\Users\\YourUsername\\Desktop\\e-commerce-project"
+# Example for Linux/Mac: "/home/username/projects/e-commerce-project"
+# ============================================
+
+- name: Ansible-Only Fast Website Deployment (Single Region)
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars:
+    bucket_name: "ansible-demo-{{ ansible_date_time.epoch }}"
+    aws_region: "us-east-1"
+    # UPDATE THIS: Change to your project directory path
+    project_dir: "C:\\Users\\hp\\Desktop\\e-commerce-project"
+
+  tasks:
+    - name: 🚀 Starting Ansible-Only Deployment Demo
+      debug:
+        msg:
+          - "⚡ ANSIBLE AUTOMATION DEMO"
+          - "🎯 Single Region Deployment (FAST!)"
+          - "⏱️ Expected time: 2-3 minutes"
+          - "🌍 Region: {{ aws_region }}"
+          - "🪣 Bucket: {{ bucket_name }}"
+
+    - name: 📦 Create S3 bucket using AWS CLI
+      command: /mnt/c/Windows/System32/cmd.exe /c "aws s3 mb s3://{{ bucket_name }} --region {{ aws_region }}"
+      register: bucket_create
+      ignore_errors: yes
+
+    - name: ✅ Bucket created successfully
+      debug:
+        msg: "S3 bucket {{ bucket_name }} created in {{ aws_region }}"
+      when: bucket_create.rc == 0
+
+    - name: 🌐 Configure bucket for website hosting
+      command: /mnt/c/Windows/System32/cmd.exe /c "aws s3 website s3://{{ bucket_name }} --index-document index.html --error-document index.html"
+      register: website_config
+
+    - name: 🔓 Make bucket publicly readable
+      shell: |
+        /mnt/c/Windows/System32/cmd.exe /c "aws s3api put-public-access-block --bucket {{ bucket_name }} --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
+      register: policy_result
+      ignore_errors: yes
+
+    # NOTE: This command uses Windows path format for WSL environments
+    # If running on native Linux/Mac, change the command to use native paths
+    - name: 📁 Upload website files to S3
+      command: /mnt/c/Windows/System32/cmd.exe /c "cd C:\Users\hp\Desktop\e-commerce-project && aws s3 sync . s3://{{ bucket_name }} --exclude terraform/* --exclude .git/* --exclude ansible/* --exclude *.md"
+      register: sync_result
+
+    - name: 🌐 Get website URL
+      set_fact:
+        website_url: "http://{{ bucket_name }}.s3-website-{{ aws_region }}.amazonaws.com"
+
+    - name: 🎉 ANSIBLE DEPLOYMENT SUCCESS!
+      debug:
+        msg:
+          - "⚡ ANSIBLE automated deployment completed in ~3 minutes!"
+          - "🌐 Website URL: {{ website_url }}"
+          - "🪣 S3 Bucket: {{ bucket_name }}"
+          - "📍 Region: {{ aws_region }} (Single region - FAST!)"
+          - "🚀 Perfect for development and quick demos!"
+          - "💡 Ansible handled: Bucket creation, configuration, file upload!"
+          - ""
+          - "🔗 Click here: {{ website_url }}"
+    - name: 🔓 Remove public access block (if exists)
+      command: /mnt/c/Windows/System32/cmd.exe /c "aws s3api delete-public-access-block --bucket {{ bucket_name }}"
+      ignore_errors: yes
+    - name: 📋 Manual step - Apply bucket policy
+      debug:
+        msg:
+          - "⚠️  MANUAL STEP: Run this command to make files public:"
+          - ""
+          - 'aws s3api put-bucket-policy --bucket {{ bucket_name }} --policy ''{"Version":"2012-10-17","Statement":[{"Sid":"PublicReadGetObject","Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::{{ bucket_name }}/*"}]}'''
+          - ""
+          - "Or use AWS Console: S3 > {{ bucket_name }} > Permissions > Bucket Policy"

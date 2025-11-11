@@ -1,0 +1,84 @@
+---
+- name: Complete Ansible Cleanup (Like Terraform Destroy)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: 🧹 Starting COMPLETE Ansible cleanup
+      debug:
+        msg:
+          - "🗑️ COMPLETE CLEANUP - Like 'terraform destroy --auto-approve'"
+          - "📋 Removing ALL Ansible demo resources"
+          - "💰 Ensuring ZERO AWS costs remain"
+          - "🔍 Checking: S3 buckets, policies, website configs"
+
+    - name: 📋 List all demo buckets
+      command: /mnt/c/Windows/System32/cmd.exe /c "aws s3api list-buckets --query \"Buckets[?starts_with(Name, 'ansible-demo-')].Name\" --output text"
+      register: demo_buckets
+      ignore_errors: yes
+
+    - name: 📊 Show buckets to be deleted
+      debug:
+        msg: "Found buckets: {{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+
+    - name: 🗑️ Force empty buckets (remove ALL files and versions)
+      command: aws s3 rm s3://{{ item }} --recursive --force
+      loop: "{{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+      ignore_errors: yes
+
+    - name: 🔓 Remove bucket policies
+      command: aws s3api delete-bucket-policy --bucket {{ item }}
+      loop: "{{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+      ignore_errors: yes
+
+    - name: 🌐 Remove website configurations
+      command: aws s3api delete-bucket-website --bucket {{ item }}
+      loop: "{{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+      ignore_errors: yes
+
+    - name: 🔒 Remove public access block configurations
+      command: aws s3api delete-public-access-block --bucket {{ item }}
+      loop: "{{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+      ignore_errors: yes
+
+    - name: 🗑️ Force delete buckets
+      command: aws s3 rb s3://{{ item }} --force
+      loop: "{{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+      ignore_errors: yes
+
+    - name: 🧹 Clean up any orphaned multipart uploads
+      command: aws s3api abort-multipart-upload --bucket {{ item }} --key dummy --upload-id dummy
+      loop: "{{ demo_buckets.stdout.split() }}"
+      when: demo_buckets.stdout != ""
+      ignore_errors: yes
+
+    - name: 📋 Verify complete cleanup
+      command: aws s3api list-buckets --query "Buckets[?starts_with(Name, 'ansible-demo-')].Name" --output text
+      register: remaining_buckets
+      ignore_errors: yes
+
+    - name: ✅ COMPLETE CLEANUP SUCCESS
+      debug:
+        msg:
+          - "🎉 COMPLETE CLEANUP SUCCESSFUL!"
+          - "🗑️ All S3 buckets deleted"
+          - "🔓 All policies removed"
+          - "🌐 All website configs removed"
+          - "🔒 All access blocks removed"
+          - "💰 ZERO AWS costs remaining"
+          - "✅ Like 'terraform destroy --auto-approve' - everything gone!"
+      when: remaining_buckets.stdout == ""
+
+    - name: ⚠️ Cleanup verification
+      debug:
+        msg:
+          - "⚠️ Some resources may still exist: {{ remaining_buckets.stdout }}"
+          - "💡 Run cleanup again or check AWS console"
+      when: remaining_buckets.stdout != ""

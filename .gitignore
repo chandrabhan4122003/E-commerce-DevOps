@@ -1,2 +1,47 @@
-
+# OS Files
 .DS_Store
+Thumbs.db
+
+# AWS Credentials
+.aws/
+*.pem
+*.key
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/*.tfvars
+!terraform/terraform.tfvars.example
+
+# Ansible
+ansible/*.retry
+*.retry
+
+# Logs
+*.log
+logs/
+
+# Environment Variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Nagios (if accidentally copied)
+nagios.cfg
+nagios4/
+
+# Temporary Files
+*.tmp
+*.bak
+*~
+
+# Personal Configuration
+bucket-policy.json
+ecommerce-monitoring.cfg
